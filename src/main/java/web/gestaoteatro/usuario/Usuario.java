@@ -4,17 +4,53 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import org.hibernate.Hibernate;
 import web.gestaoteatro.common.enums.Papel;
 
+@Entity
+@Table(name = "usuario")
+@Access(AccessType.FIELD)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
 
+    @Id
+    @SequenceGenerator(name = "usuario_codigo_seq_gen", sequenceName = "usuario_codigo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_codigo_seq_gen")
     private Long codigo;
+    @Column(nullable = false, length = 120)
     private String nome;
+    @Column(nullable = false, unique = true, length = 60)
     private String login;
+    @Column(nullable = false, unique = true, length = 254)
     private String email;
+    @Column(nullable = false, length = 255)
     private String senha;
+    @Column(nullable = false)
     private boolean ativo = true;
-    private final Set<Papel> papeis = EnumSet.noneOf(Papel.class);
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "usuario_papel", joinColumns = @JoinColumn(name = "codigo_usuario"),
+            uniqueConstraints = @UniqueConstraint(name = "uk_usuario_papel", columnNames = {"codigo_usuario", "papel"}))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "papel", nullable = false, length = 20)
+    private Set<Papel> papeis = EnumSet.noneOf(Papel.class);
 
     public Usuario() {
     }
@@ -106,7 +142,7 @@ public class Usuario {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(getCodigo());
     }
 
     @Override
@@ -115,9 +151,9 @@ public class Usuario {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (Hibernate.getClass(this) != Hibernate.getClass(obj))
             return false;
         Usuario other = (Usuario) obj;
-        return codigo != null && Objects.equals(codigo, other.codigo);
+        return getCodigo() != null && Objects.equals(getCodigo(), other.getCodigo());
     }
 }

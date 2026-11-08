@@ -4,16 +4,43 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import org.hibernate.Hibernate;
 import web.gestaoteatro.sessao.Sessao;
 
+@Entity
+@Table(name = "peca")
+@Access(AccessType.FIELD)
 public class Peca {
 
+    @Id
+    @SequenceGenerator(name = "peca_codigo_seq_gen", sequenceName = "peca_codigo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "peca_codigo_seq_gen")
     private Long codigo;
+    @Column(nullable = false, length = 160)
     private String nome;
+    @Column(length = 4000)
     private String descricao;
+    @Column(name = "duracao_minutos")
     private Integer duracaoMinutos;
+    @Column(name = "classificacao_etaria")
     private Integer classificacaoEtaria;
-    private final List<Sessao> sessoes = new ArrayList<>();
+    @OneToMany(mappedBy = "peca", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("data ASC, horario ASC, codigo ASC")
+    private List<Sessao> sessoes = new ArrayList<>();
 
     public Peca() {
     }
@@ -88,11 +115,11 @@ public class Peca {
 
     public void addSessao(Sessao sessao) {
         Objects.requireNonNull(sessao, "O relacionamento nao pode ser nulo.");
-        // O vinculo usa a instancia: codigo pode mudar e objetos novos nao tem ID.
-        if (sessoes.stream().noneMatch(item -> item == sessao)) {
+        // equals reconhece a entidade mesmo quando o Hibernate usa um proxy.
+        if (!sessoes.contains(sessao)) {
             sessoes.add(sessao);
         }
-        if (sessao.getPeca() != this) {
+        if (!Objects.equals(sessao.getPeca(), this)) {
             sessao.setPeca(this);
         }
     }
@@ -100,15 +127,15 @@ public class Peca {
     public void removeSessao(Sessao sessao) {
         if (sessao == null)
             return;
-        sessoes.removeIf(item -> item == sessao);
-        if (sessao.getPeca() == this) {
+        sessoes.remove(sessao);
+        if (Objects.equals(sessao.getPeca(), this)) {
             sessao.setPeca(null);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(getCodigo());
     }
 
     @Override
@@ -117,9 +144,9 @@ public class Peca {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (Hibernate.getClass(this) != Hibernate.getClass(obj))
             return false;
         Peca other = (Peca) obj;
-        return codigo != null && Objects.equals(codigo, other.codigo);
+        return getCodigo() != null && Objects.equals(getCodigo(), other.getCodigo());
     }
 }

@@ -2,16 +2,48 @@ package web.gestaoteatro.inscricao;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import org.hibernate.Hibernate;
 import web.gestaoteatro.common.enums.SituacaoInscricao;
 import web.gestaoteatro.espectador.Espectador;
 import web.gestaoteatro.sessao.Sessao;
 
+@Entity
+@Table(name = "inscricao", indexes = {
+        @Index(name = "idx_inscricao_espectador", columnList = "codigo_espectador"),
+        @Index(name = "idx_inscricao_sessao", columnList = "codigo_sessao")
+})
+@Access(AccessType.FIELD)
 public class Inscricao {
 
+    @Id
+    @SequenceGenerator(name = "inscricao_codigo_seq_gen", sequenceName = "inscricao_codigo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inscricao_codigo_seq_gen")
     private Long codigo;
+    @Column(name = "data_inscricao", nullable = false)
     private LocalDateTime dataInscricao;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private SituacaoInscricao situacao = SituacaoInscricao.PENDENTE;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "codigo_espectador", nullable = false)
     private Espectador espectador;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "codigo_sessao", nullable = false)
     private Sessao sessao;
 
     public Inscricao() {
@@ -55,7 +87,7 @@ public class Inscricao {
     }
 
     public void setEspectador(Espectador espectador) {
-        if (this.espectador == espectador)
+        if (Objects.equals(this.espectador, espectador))
             return;
         Espectador anterior = this.espectador;
         this.espectador = espectador;
@@ -72,7 +104,7 @@ public class Inscricao {
     }
 
     public void setSessao(Sessao sessao) {
-        if (this.sessao == sessao)
+        if (Objects.equals(this.sessao, sessao))
             return;
         Sessao anterior = this.sessao;
         this.sessao = sessao;
@@ -86,7 +118,7 @@ public class Inscricao {
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(getCodigo());
     }
 
     @Override
@@ -95,9 +127,9 @@ public class Inscricao {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (Hibernate.getClass(this) != Hibernate.getClass(obj))
             return false;
         Inscricao other = (Inscricao) obj;
-        return codigo != null && Objects.equals(codigo, other.codigo);
+        return getCodigo() != null && Objects.equals(getCodigo(), other.getCodigo());
     }
 }

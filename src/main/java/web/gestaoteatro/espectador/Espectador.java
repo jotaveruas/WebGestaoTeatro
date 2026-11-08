@@ -6,16 +6,34 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 import web.gestaoteatro.common.enums.Papel;
 import web.gestaoteatro.inscricao.Inscricao;
 import web.gestaoteatro.usuario.Usuario;
 
+@Entity
+@Table(name = "espectador")
+@Access(AccessType.FIELD)
+@PrimaryKeyJoinColumn(name = "codigo")
 public class Espectador extends Usuario {
 
+    @Column(unique = true, length = 11)
     private String cpf;
+    @Column(length = 20)
     private String telefone;
+    @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
-    private final List<Inscricao> inscricoes = new ArrayList<>();
+    @OneToMany(mappedBy = "espectador", fetch = FetchType.LAZY)
+    @OrderBy("dataInscricao ASC, codigo ASC")
+    private List<Inscricao> inscricoes = new ArrayList<>();
 
     public Espectador() {
         addPapel(Papel.ESPECTADOR);
@@ -76,11 +94,11 @@ public class Espectador extends Usuario {
 
     public void addInscricao(Inscricao inscricao) {
         Objects.requireNonNull(inscricao, "O relacionamento nao pode ser nulo.");
-        // O vinculo usa a instancia: codigo pode mudar e objetos novos nao tem ID.
-        if (inscricoes.stream().noneMatch(item -> item == inscricao)) {
+        // equals reconhece a entidade mesmo quando o Hibernate usa um proxy.
+        if (!inscricoes.contains(inscricao)) {
             inscricoes.add(inscricao);
         }
-        if (inscricao.getEspectador() != this) {
+        if (!Objects.equals(inscricao.getEspectador(), this)) {
             inscricao.setEspectador(this);
         }
     }
@@ -88,8 +106,8 @@ public class Espectador extends Usuario {
     public void removeInscricao(Inscricao inscricao) {
         if (inscricao == null)
             return;
-        inscricoes.removeIf(item -> item == inscricao);
-        if (inscricao.getEspectador() == this) {
+        inscricoes.remove(inscricao);
+        if (Objects.equals(inscricao.getEspectador(), this)) {
             inscricao.setEspectador(null);
         }
     }

@@ -7,19 +7,52 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import org.hibernate.Hibernate;
 import web.gestaoteatro.inscricao.Inscricao;
 import web.gestaoteatro.peca.Peca;
 
+@Entity
+@Table(name = "sessao", indexes = @Index(name = "idx_sessao_peca", columnList = "codigo_peca"))
+@Access(AccessType.FIELD)
 public class Sessao {
 
+    @Id
+    @SequenceGenerator(name = "sessao_codigo_seq_gen", sequenceName = "sessao_codigo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessao_codigo_seq_gen")
     private Long codigo;
+    @Column(nullable = false)
     private LocalDate data;
+    @Column(nullable = false)
     private LocalTime horario;
+    @Column(nullable = false, length = 160)
     private String local;
+    @Column(nullable = false)
     private Integer capacidade;
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "codigo_peca", nullable = false)
     private Peca peca;
-    private final List<Inscricao> inscricoes = new ArrayList<>();
+    @OneToMany(mappedBy = "sessao", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("dataInscricao ASC, codigo ASC")
+    private List<Inscricao> inscricoes = new ArrayList<>();
 
     public Sessao() {
     }
@@ -89,7 +122,7 @@ public class Sessao {
     }
 
     public void setPeca(Peca peca) {
-        if (this.peca == peca)
+        if (Objects.equals(this.peca, peca))
             return;
         Peca anterior = this.peca;
         this.peca = peca;
@@ -121,11 +154,11 @@ public class Sessao {
 
     public void addInscricao(Inscricao inscricao) {
         Objects.requireNonNull(inscricao, "O relacionamento nao pode ser nulo.");
-        // O vinculo usa a instancia: codigo pode mudar e objetos novos nao tem ID.
-        if (inscricoes.stream().noneMatch(item -> item == inscricao)) {
+        // equals reconhece a entidade mesmo quando o Hibernate usa um proxy.
+        if (!inscricoes.contains(inscricao)) {
             inscricoes.add(inscricao);
         }
-        if (inscricao.getSessao() != this) {
+        if (!Objects.equals(inscricao.getSessao(), this)) {
             inscricao.setSessao(this);
         }
     }
@@ -133,15 +166,15 @@ public class Sessao {
     public void removeInscricao(Inscricao inscricao) {
         if (inscricao == null)
             return;
-        inscricoes.removeIf(item -> item == inscricao);
-        if (inscricao.getSessao() == this) {
+        inscricoes.remove(inscricao);
+        if (Objects.equals(inscricao.getSessao(), this)) {
             inscricao.setSessao(null);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(getCodigo());
     }
 
     @Override
@@ -150,9 +183,9 @@ public class Sessao {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (Hibernate.getClass(this) != Hibernate.getClass(obj))
             return false;
         Sessao other = (Sessao) obj;
-        return codigo != null && Objects.equals(codigo, other.codigo);
+        return getCodigo() != null && Objects.equals(getCodigo(), other.getCodigo());
     }
 }
