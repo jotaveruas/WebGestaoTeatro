@@ -18,6 +18,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import web.gestaoteatro.common.enums.SituacaoInscricao;
 import web.gestaoteatro.espectador.Espectador;
 import web.gestaoteatro.sessao.Sessao;
@@ -37,6 +39,7 @@ public class Inscricao {
     @Column(name = "data_inscricao", nullable = false)
     private LocalDateTime dataInscricao;
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(nullable = false, length = 20)
     private SituacaoInscricao situacao = SituacaoInscricao.PENDENTE;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

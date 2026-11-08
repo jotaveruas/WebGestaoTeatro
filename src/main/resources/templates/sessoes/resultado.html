@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<section th:fragment="resultado" id="resultado-sessoes" aria-label="Resultado da busca" aria-live="polite">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+        <p><strong class="font-semibold text-slate-800" th:text="${pagina.totalElementos}">0</strong> sessão(ões) encontrada(s)</p>
+        <p th:if="${pagina.numeroPaginas > 0}" th:text="|Página ${pagina.atual + 1} de ${pagina.numeroPaginas}|"></p>
+    </div>
+    <div th:if="${pagina.vazia}" class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+        <h2 class="text-lg font-semibold text-noite">Nenhuma sessão encontrada</h2>
+        <p class="mt-2 text-sm text-slate-600">Ajuste os filtros ou cadastre uma nova apresentação.</p>
+        <a class="btn btn-primary mt-6" th:href="@{/sessoes/nova}">Cadastrar sessão</a>
+    </div>
+    <div th:unless="${pagina.vazia}" class="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+        <table class="w-full border-collapse text-left text-sm">
+            <caption class="sr-only">Sessões cadastradas e ações disponíveis</caption>
+            <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr>
+                <th scope="col" class="px-5 py-4">Peça</th><th scope="col" class="px-5 py-4">Data e horário</th><th scope="col" class="px-5 py-4">Local</th><th scope="col" class="px-5 py-4">Capacidade</th><th scope="col" class="px-5 py-4">Valor</th><th scope="col" class="px-5 py-4 text-right">Ações</th>
+            </tr></thead>
+            <tbody class="divide-y divide-slate-100"><tr th:each="sessao : ${pagina.conteudo}" class="align-top hover:bg-slate-50/70">
+                <td class="min-w-40 px-5 py-5"><a class="font-semibold text-noite hover:underline" th:href="@{/sessoes/{id}(id=${sessao.codigo})}" th:text="${sessao.nomePeca}">Peça</a><span class="mt-1 block text-xs text-slate-400" th:text="|Sessão #${sessao.codigo}|"></span></td>
+                <td class="whitespace-nowrap px-5 py-5"><span class="block font-medium" th:text="${#temporals.format(sessao.data, 'dd/MM/yyyy')}"></span><span class="mt-1 block text-xs text-slate-500" th:text="${#temporals.format(sessao.horario, 'HH:mm')}"></span></td>
+                <td class="min-w-36 px-5 py-5 text-slate-600" th:text="${sessao.local}"></td>
+                <td class="px-5 py-5 text-slate-600" th:text="${sessao.capacidade}"></td>
+                <td class="whitespace-nowrap px-5 py-5 font-medium" th:text="|R$ ${#numbers.formatDecimal(sessao.valor, 1, 'POINT', 2, 'COMMA')}|"></td>
+                <td class="px-5 py-5"><div class="flex items-center justify-end gap-4 whitespace-nowrap">
+                    <a class="text-sm font-medium text-vinho hover:underline" th:href="@{/sessoes/{id}/editar(id=${sessao.codigo})}" th:aria-label="|Editar sessão ${sessao.codigo} de ${sessao.nomePeca}|">Editar</a>
+                    <form method="post" th:action="@{/sessoes/{id}/excluir(id=${sessao.codigo})}" data-confirm="Excluir esta sessão? Esta ação não pode ser desfeita.">
+                        <button class="text-sm text-slate-500 hover:text-rose-700 hover:underline" type="submit" th:aria-label="|Excluir sessão ${sessao.codigo} de ${sessao.nomePeca}|">Excluir</button>
+                    </form>
+                </div></td>
+            </tr></tbody>
+        </table>
+    </div>
+    <nav th:if="${pagina.numeroPaginas > 1}" class="mt-6 flex flex-wrap items-center justify-center gap-2" aria-label="Paginação das sessões">
+        <a th:if="${!pagina.primeira}" class="page-link" th:href="${pagina.urlParaPagina(pagina.atual - 1)}" th:hx-get="${pagina.urlParaPagina(pagina.atual - 1)}" hx-target="#resultado-sessoes" hx-swap="outerHTML" hx-push-url="true">Anterior</a>
+        <th:block th:each="numero : ${#numbers.sequence(pagina.inicio, pagina.fim)}">
+            <span th:if="${numero == pagina.atual}" class="page-link bg-noite text-white" aria-current="page" th:text="${numero + 1}"></span>
+            <a th:unless="${numero == pagina.atual}" class="page-link" th:href="${pagina.urlParaPagina(numero)}" th:hx-get="${pagina.urlParaPagina(numero)}" hx-target="#resultado-sessoes" hx-swap="outerHTML" hx-push-url="true" th:text="${numero + 1}"></a>
+        </th:block>
+        <a th:if="${!pagina.ultima}" class="page-link" th:href="${pagina.urlParaPagina(pagina.atual + 1)}" th:hx-get="${pagina.urlParaPagina(pagina.atual + 1)}" hx-target="#resultado-sessoes" hx-swap="outerHTML" hx-push-url="true">Próxima</a>
+    </nav>
+</section>
+</body>
+</html>

@@ -23,6 +23,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import org.hibernate.Hibernate;
 import web.gestaoteatro.inscricao.Inscricao;
 import web.gestaoteatro.peca.Peca;
@@ -36,6 +37,10 @@ public class Sessao {
     @SequenceGenerator(name = "sessao_codigo_seq_gen", sequenceName = "sessao_codigo_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessao_codigo_seq_gen")
     private Long codigo;
+
+    @Version
+    @Column(nullable = false)
+    private Long versao;
     @Column(nullable = false)
     private LocalDate data;
     @Column(nullable = false)
@@ -75,6 +80,14 @@ public class Sessao {
 
     public void setCodigo(Long codigo) {
         this.codigo = codigo;
+    }
+
+    public Long getVersao() {
+        return versao;
+    }
+
+    public void setVersao(Long versao) {
+        this.versao = versao;
     }
 
     public LocalDate getData() {

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Sessões')}"></head>
+<body>
+<header th:replace="~{layout/base :: header}"></header>
+<main class="mx-auto max-w-6xl px-5 pt-10 sm:px-8">
+    <div class="mb-7 flex flex-wrap items-end justify-between gap-5">
+        <div><p class="eyebrow">PROGRAMAÇÃO</p><h1 class="page-title">Sessões</h1><p class="mt-2 text-sm text-slate-600">Organize datas, horários e locais das apresentações.</p></div>
+        <a class="btn btn-primary" th:href="@{/sessoes/nova}"><span aria-hidden="true">+</span> Nova sessão</a>
+    </div>
+    <div th:replace="~{layout/base :: avisos}"></div>
+    <form method="get" th:action="@{/sessoes}" th:hx-get="@{/sessoes}" hx-target="#resultado-sessoes"
+          hx-swap="outerHTML" hx-push-url="true" class="mb-6 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1.2fr_auto] lg:items-end" aria-label="Buscar sessões">
+        <div><label for="termo" class="label">Peça ou local</label><input id="termo" name="termo" type="search" maxlength="100" th:value="${termo}" class="input" placeholder="Ex.: Hamlet ou Teatro Municipal"></div>
+        <div><label for="data" class="label">Data</label><input id="data" name="data" type="date" th:value="${dataFiltro}" class="input"></div>
+        <div><label for="ordem" class="label">Ordenar por</label><select id="ordem" name="ordem" class="input">
+            <option value="data" th:selected="${ordem == 'data'}">Data: mais próxima</option>
+            <option value="dataDesc" th:selected="${ordem == 'dataDesc'}">Data: mais distante</option>
+            <option value="peca" th:selected="${ordem == 'peca'}">Nome da peça</option>
+        </select></div>
+        <div class="flex items-center gap-3"><button class="btn btn-dark" type="submit">Buscar</button><a class="text-sm text-slate-600 underline underline-offset-4" th:href="@{/sessoes}">Limpar</a></div>
+    </form>
+    <div th:replace="~{sessoes/resultado :: resultado}"></div>
+</main>
+<footer th:replace="~{layout/base :: footer}"></footer>
+</body>
+</html>

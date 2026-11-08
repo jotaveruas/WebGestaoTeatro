@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Erro 500')}"></head>
+<body><header th:replace="~{layout/base :: header}"></header>
+<main class="mx-auto max-w-3xl px-5 py-20 sm:px-8"><p class="eyebrow">ERRO 500</p><h1 class="page-title">Não foi possível concluir a operação</h1><p class="mt-4 max-w-xl text-slate-600">Tente novamente em instantes. Se o problema continuar, procure o responsável pelo sistema.</p><a class="btn btn-primary mt-8" th:href="@{/sessoes}">Voltar para sessões</a></main>
+</body></html>

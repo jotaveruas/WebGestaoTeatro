@@ -1,0 +1,3 @@
+htmx 4.0.0: arquivo fornecido no material da disciplina (Parte 03).
+Projeto: https://github.com/bigskysoftware/htmx
+Licenca Zero-Clause BSD (0BSD). Consulte THIRD-PARTY-NOTICES.md na raiz do projeto.

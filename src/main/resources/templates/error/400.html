@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Erro 400')}"></head>
+<body><header th:replace="~{layout/base :: header}"></header>
+<main class="mx-auto max-w-3xl px-5 py-20 sm:px-8"><p class="eyebrow">ERRO 400</p><h1 class="page-title">Não foi possível abrir esta página</h1><p class="mt-4 max-w-xl text-slate-600">Confira os valores informados na busca e tente novamente.</p><a class="btn btn-primary mt-8" th:href="@{/sessoes}">Voltar para sessões</a></main>
+</body></html>

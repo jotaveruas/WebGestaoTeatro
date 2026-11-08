@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@source "../../templates";
+@theme {
+    --color-vinho: #8d2944;
+    --color-noite: #162630;
+    --font-sans: "Segoe UI", Arial, sans-serif;
+}
+@layer base {
+    body { @apply bg-slate-50 font-sans text-slate-800 antialiased; }
+    button, a, input, select { @apply outline-offset-4; }
+    button:not(:disabled), select { cursor: pointer; }
+    dialog::backdrop { background: rgb(15 23 42 / 0.5); }
+}
+@layer components {
+    .page-title { @apply mt-2 text-3xl font-semibold tracking-tight text-noite sm:text-4xl; }
+    .eyebrow { @apply text-xs font-semibold tracking-[0.18em] text-vinho; }
+    .btn { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition disabled:cursor-wait disabled:opacity-60; }
+    .btn-primary { @apply bg-vinho text-white hover:bg-vinho/90; }
+    .btn-dark { @apply bg-noite text-white hover:bg-noite/90; }
+    .btn-secondary { @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-100; }
+    .label { @apply mb-2 block text-sm font-medium text-slate-600; }
+    .input { @apply block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-vinho focus:outline-2 focus:outline-vinho/20; }
+    .input-erro { @apply border-rose-500; }
+    .field-error { @apply mt-2 text-sm text-rose-700; }
+    .page-link { @apply inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm; }
+    a.page-link { @apply bg-white text-slate-600 hover:border-vinho hover:text-vinho; }
+}

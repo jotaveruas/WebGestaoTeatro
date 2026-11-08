@@ -23,6 +23,8 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import web.gestaoteatro.common.enums.Papel;
 
 @Entity
@@ -49,6 +51,7 @@ public class Usuario {
     @CollectionTable(name = "usuario_papel", joinColumns = @JoinColumn(name = "codigo_usuario"),
             uniqueConstraints = @UniqueConstraint(name = "uk_usuario_papel", columnNames = {"codigo_usuario", "papel"}))
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "papel", nullable = false, length = 20)
     private Set<Papel> papeis = EnumSet.noneOf(Papel.class);
 
