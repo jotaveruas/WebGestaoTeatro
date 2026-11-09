@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Adaptado dos fragmentos disponibilizados pelo professor. -->
+<th:block th:fragment="erros(nomeAtributo)">
+    <div th:id="${nomeAtributo + '-erro'}" class="field-error" th:if="${#fields.hasErrors(nomeAtributo)}">
+        <p th:each="erro : ${#fields.errors(nomeAtributo)}" th:text="${erro}"></p>
+    </div>
+</th:block>
+<svg th:fragment="iconeErro" class="icone-erro" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="9"></circle><path d="M12 7v6m0 3v1"></path>
+</svg>
+
+<th:block th:fragment="inputTexto(nomeAtributo, textoLabel, obrigatorio, limite, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="text" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}" th:maxlength="${limite}" th:classappend="${temErro} ? 'reserva-icone' : ''">
+        <th:block th:if="${temErro}" th:insert="~{components/forms :: iconeErro}"></th:block>
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputEmail(nomeAtributo, textoLabel, obrigatorio, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="email" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}" autocomplete="email" th:classappend="${temErro} ? 'reserva-icone' : ''">
+        <th:block th:if="${temErro}" th:insert="~{components/forms :: iconeErro}"></th:block>
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputData(nomeAtributo, textoLabel, obrigatorio, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="date" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}">
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputHora(nomeAtributo, textoLabel, obrigatorio, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="time" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}" step="60">
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputNumero(nomeAtributo, textoLabel, obrigatorio, minimo, maximo, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="number" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}" th:min="${minimo}" th:max="${maximo}" step="1">
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputDinheiro(nomeAtributo, textoLabel, obrigatorio, ajuda)" th:with="temErro=${#fields.hasErrors(nomeAtributo)},
+        descricao=${(ajuda != null and !#strings.isEmpty(ajuda) ? nomeAtributo + '-ajuda' : '') + (#fields.hasErrors(nomeAtributo) ? ' ' + nomeAtributo + '-erro' : '')}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative">
+        <input type="number" th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}"
+               th:required="${obrigatorio}" class="input" th:errorclass="input-erro"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${descricao}" min="0" max="99999999.99" step="0.01" placeholder="0,00">
+    </div>
+    <p th:if="${ajuda != null and !#strings.isEmpty(ajuda)}" th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="selectNormal(nomeAtributo, textoLabel, listaOpcoes, propValue, propLabel, obrigatorio, ajuda)"
+          th:with="temErro=${#fields.hasErrors(nomeAtributo)}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <select th:id="${nomeAtributo}" th:field="*{__${nomeAtributo}__}" th:required="${obrigatorio}"
+            class="input" th:errorclass="input-erro" th:attr="aria-invalid=${temErro}, aria-describedby=${nomeAtributo + '-ajuda' + (temErro ? ' ' + nomeAtributo + '-erro' : '')}">
+        <option value="">Selecione uma opção</option>
+        <option th:each="item : ${listaOpcoes}" th:value="${propValue != null ? item[propValue] : item}"
+                th:text="${propLabel != null ? item[propLabel] : item}"></option>
+    </select>
+    <p th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+
+<th:block th:fragment="inputSenha(nomeAtributo, textoLabel, obrigatorio, desabilitado, ajuda)"
+          th:with="temErro=${#fields.hasErrors(nomeAtributo)}">
+    <label th:for="${nomeAtributo}" th:text="${textoLabel}" class="label"></label>
+    <div class="relative campo-senha">
+        <!-- Senhas nunca retornam em value nem em inputs hidden. -->
+        <input type="password" th:id="${nomeAtributo}" th:name="${nomeAtributo}" autocomplete="new-password"
+               th:required="${obrigatorio}" th:disabled="${desabilitado}" class="input input-senha"
+               th:classappend="${temErro} ? 'input-erro' : ''"
+               th:attr="aria-invalid=${temErro}, aria-describedby=${nomeAtributo + '-ajuda' + (temErro ? ' ' + nomeAtributo + '-erro' : '')}">
+        <button type="button" class="toggle-senha" th:disabled="${desabilitado}"
+                th:attr="aria-controls=${nomeAtributo}" aria-label="Mostrar senha" aria-pressed="false">
+            <svg class="icone-olho-fechado h-5 w-5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18M10 5a11 11 0 0 1 11 7 14 14 0 0 1-4 5M6 6a14 14 0 0 0-3 6s3 7 9 7a10 10 0 0 0 4-1M10 10a3 3 0 0 0 4 4"></path></svg>
+            <svg class="icone-olho-aberto hidden h-5 w-5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
+        <th:block th:if="${temErro}" th:insert="~{components/forms :: iconeErro}"></th:block>
+    </div>
+    <p th:id="${nomeAtributo + '-ajuda'}" th:text="${ajuda}" class="mt-2 text-xs text-slate-500"></p>
+    <th:block th:replace="~{components/forms :: erros(${nomeAtributo})}"></th:block>
+</th:block>
+</body>
+</html>

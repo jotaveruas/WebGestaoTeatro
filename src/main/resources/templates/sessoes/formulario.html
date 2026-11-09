@@ -15,33 +15,12 @@
             <a th:if="${codigo != null}" th:href="@{/sessoes/{id}/editar(id=${codigo})}" class="mt-2 inline-block font-semibold underline">Recarregar dados atuais</a>
         </div>
         <div class="grid gap-6 sm:grid-cols-2">
-            <div class="sm:col-span-2"><label for="codigoPeca" class="label">Peça</label>
-                <select id="codigoPeca" th:field="*{codigoPeca}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('codigoPeca')}" aria-describedby="codigoPeca-erro codigoPeca-ajuda"><option value="">Selecione uma peça</option><option th:each="peca : ${pecas}" th:value="${peca.codigo}" th:text="${peca.nome}"></option></select>
-                <p id="codigoPeca-ajuda" class="mt-2 text-xs text-slate-500">Selecione a peça da apresentação.</p>
-                <p id="codigoPeca-erro" class="field-error" th:if="${#fields.hasErrors('codigoPeca')}" th:errors="*{codigoPeca}"></p>
-            </div>
-            <div class=""><label for="data" class="label">Data</label>
-                <input type="date" id="data" th:field="*{data}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('data')}" aria-describedby="data-erro" >
-                <p id="data-erro" class="field-error" th:if="${#fields.hasErrors('data')}" th:errors="*{data}"></p>
-            </div>
-            <div class=""><label for="horario" class="label">Horário</label>
-                <input type="time" id="horario" th:field="*{horario}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('horario')}" aria-describedby="horario-erro" step="60">
-                <p id="horario-erro" class="field-error" th:if="${#fields.hasErrors('horario')}" th:errors="*{horario}"></p>
-            </div>
-            <div class="sm:col-span-2"><label for="local" class="label">Local</label>
-                <input type="text" id="local" th:field="*{local}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('local')}" aria-describedby="local-erro" maxlength="160" placeholder="Ex.: Teatro Municipal">
-                <p id="local-erro" class="field-error" th:if="${#fields.hasErrors('local')}" th:errors="*{local}"></p>
-            </div>
-            <div class=""><label for="capacidade" class="label">Capacidade</label>
-                <input type="number" id="capacidade" th:field="*{capacidade}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('capacidade')}" aria-describedby="capacidade-erro capacidade-ajuda" min="1" max="2147483647" step="1">
-                <p id="capacidade-ajuda" class="mt-2 text-xs text-slate-500">Número máximo de espectadores.</p>
-                <p id="capacidade-erro" class="field-error" th:if="${#fields.hasErrors('capacidade')}" th:errors="*{capacidade}"></p>
-            </div>
-            <div class=""><label for="valor" class="label">Valor do ingresso (R$)</label>
-                <input type="number" id="valor" th:field="*{valor}" required class="input" th:errorclass="input-erro" th:attr="aria-invalid=${#fields.hasErrors('valor')}" aria-describedby="valor-erro valor-ajuda" min="0" max="99999999.99" step="0.01" placeholder="0,00">
-                <p id="valor-ajuda" class="mt-2 text-xs text-slate-500">Informe zero para uma sessão gratuita.</p>
-                <p id="valor-erro" class="field-error" th:if="${#fields.hasErrors('valor')}" th:errors="*{valor}"></p>
-            </div>
+            <div class="sm:col-span-2"><th:block th:replace="~{components/forms :: selectNormal('codigoPeca', 'Peça', ${pecas}, 'codigo', 'nome', true, 'Selecione a peça da apresentação.')}"></th:block></div>
+            <div><th:block th:replace="~{components/forms :: inputData('data', 'Data', true, '')}"></th:block></div>
+            <div><th:block th:replace="~{components/forms :: inputHora('horario', 'Horário', true, '')}"></th:block></div>
+            <div class="sm:col-span-2"><th:block th:replace="~{components/forms :: inputTexto('local', 'Local', true, 160, '')}"></th:block></div>
+            <div><th:block th:replace="~{components/forms :: inputNumero('capacidade', 'Capacidade', true, 1, 2147483647, 'Número máximo de espectadores.')}"></th:block></div>
+            <div><th:block th:replace="~{components/forms :: inputDinheiro('valor', 'Valor do ingresso (R$)', true, 'Informe zero para uma sessão gratuita.')}"></th:block></div>
         </div>
         <div class="mt-8 flex flex-wrap items-center gap-4 border-t border-slate-100 pt-6">
             <button class="btn btn-primary" type="submit" th:text="${codigo == null ? 'Cadastrar sessão' : 'Salvar alterações'}"></button>

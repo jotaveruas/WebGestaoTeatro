@@ -25,3 +25,15 @@
     .page-link { @apply inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-sm; }
     a.page-link { @apply bg-white text-slate-600 hover:border-vinho hover:text-vinho; }
 }
+
+@layer components {
+    .reserva-icone { padding-right: 2.75rem; }
+    .icone-erro { position: absolute; right: 0.75rem; top: 50%; width: 1.125rem; height: 1.125rem; transform: translateY(-50%); color: #be123c; pointer-events: none; }
+    .input-senha { padding-right: 3rem; }
+    .input-senha.input-erro { padding-right: 5.5rem; }
+    .campo-senha .icone-erro { right: 3rem; }
+    .toggle-senha { position: absolute; right: 0.25rem; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 0.375rem; color: #64748b; }
+    .toggle-senha:focus-visible { outline: 2px solid #8d2944; outline-offset: 2px; }
+    .toggle-senha:disabled { cursor: not-allowed; opacity: 0.5; }
+    .input:disabled { background: #f1f5f9; opacity: 0.7; }
+}

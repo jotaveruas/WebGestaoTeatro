@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Teste do componente de senha')}"></head>
+<body>
+<main class="mx-auto max-w-xl p-8">
+    <h1 class="page-title mb-6">Teste do componente de senha</h1>
+    <form th:object="${formSenha}" method="post" action="/__teste/senha">
+        <th:block th:replace="~{components/forms :: inputSenha('senha', 'Senha', true, ${desabilitado}, 'Use uma senha que atenda aos critérios definidos.')}"></th:block>
+        <button class="btn btn-primary mt-6" type="submit">Testar</button>
+    </form>
+</main>
+</body>
+</html>
